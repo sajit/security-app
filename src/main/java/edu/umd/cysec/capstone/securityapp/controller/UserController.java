@@ -9,7 +9,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -28,8 +31,13 @@ public class UserController {
 
     @Autowired
     private MongoUserDetailsService userDetailsService;
+
+    @Autowired
+    private AuthenticationProvider authenticationProvider;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
+
 
     @GetMapping("/")
     public String index(HttpServletRequest request, HttpSession session) {
@@ -45,22 +53,19 @@ public class UserController {
     public String login(@RequestParam Map<String, String> body, Model model,HttpServletRequest request) {
         String username = body.get("username");
         String password = body.get("password");
-
-            if(userDetailsService.authenticate(username,password)) {
-                UsernamePasswordAuthenticationToken authReq
-                        = new UsernamePasswordAuthenticationToken(username, password);
-
-                SecurityContext sc = SecurityContextHolder.getContext();
-                sc.setAuthentication(authReq);
-                HttpSession session = request.getSession(true);
-                session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
-                return "home";
-            }
-            else {
-                model.addAttribute("loginError","Invalid username or password");
-                return "index";
-            }
-
+        UsernamePasswordAuthenticationToken authReq
+                = new UsernamePasswordAuthenticationToken(username, password);
+        try {
+            authenticationProvider.authenticate(authReq);
+            SecurityContext sc = SecurityContextHolder.getContext();
+            sc.setAuthentication(authReq);
+            HttpSession session = request.getSession(true);
+            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
+            return "home";
+        } catch (BadCredentialsException badCredentialsException) {
+            model.addAttribute("loginError","Invalid username or password");
+            return "index";
+        }
 
 
     }
@@ -85,7 +90,8 @@ public class UserController {
             userFound = false;
         }
         if(m.matches() && !userFound) {
-            UserDetails userDetails = new User(username,password, Collections.emptyList());
+            String encodedPassword = passwordEncoder.encode(password);
+            UserDetails userDetails = new User(username,encodedPassword, Collections.emptyList());
 
             userDetailsService.createUser(userDetails);
             return "register-success";
