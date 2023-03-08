@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Index page</title>
 </head>
 <body>
 
+
+<span th:if="${passwordError}" th:text="${passwordError}"></span>
+<div th:if="${passwordError}">
+    <b>Password Rules</b> <br/>
+        It contains at least 8 characters and at most 20 characters. <br/>
+        It contains at least one digit. <br/>
+        It contains at least one upper case alphabet. <br/>
+        It contains at least one lower case alphabet. <br/>
+        It contains at least one special character which includes !@#$%&*()-+=^. <br/>
+        It doesn’t contain any white space. <br/>
+</div>
+
+    <div><b>Login</b></div> <br/>
+    <form th:action="@{/login}" method="post">
+        <div><label> User Name : <input type="text" name="username"/> </label></div>
+        <div><label> Password: <input type="password" name="password"/> </label></div>
+        <div><input type="submit" value="Sign In"/></div>
+    </form>
+    <br/>
+    <div th:if="${loginError}" th:text="${loginError}"></div> <br/>
+    <div><b>Register</b></div> <br/>
+    <form th:action="@{/register}" method="post">
+        <div><label> User Name : <input type="text" name="username"/> </label></div>
+        <div><label> Password: <input type="password" name="password"/> </label></div>
+        <div><input type="submit" value="Register"/></div>
+    </form>
+     <br/>
+    <div th:if="${userError}">Username exists. </div>
 </body>
 </html>

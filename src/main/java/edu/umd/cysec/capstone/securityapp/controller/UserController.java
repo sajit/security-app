@@ -1,5 +1,6 @@
 package edu.umd.cysec.capstone.securityapp.controller;
 
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
@@ -8,15 +9,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,6 +39,32 @@ public class UserController {
         return "index";
     }
 
+    @PostMapping( value = "/login",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = {
+            MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    public String login(@RequestParam Map<String, String> body, Model model,HttpServletRequest request) {
+        String username = body.get("username");
+        String password = body.get("password");
+
+            if(userDetailsService.authenticate(username,password)) {
+                UsernamePasswordAuthenticationToken authReq
+                        = new UsernamePasswordAuthenticationToken(username, password);
+
+                SecurityContext sc = SecurityContextHolder.getContext();
+                sc.setAuthentication(authReq);
+                HttpSession session = request.getSession(true);
+                session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
+                return "home";
+            }
+            else {
+                model.addAttribute("loginError","Invalid username or password");
+                return "index";
+            }
+
+
+
+    }
+
 
     String passwordRegex =  "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8,20}$";
     Pattern p = Pattern.compile(passwordRegex);
@@ -53,7 +80,7 @@ public class UserController {
         Matcher m = p.matcher(password);
         boolean userFound = true;
         try {
-            UserDetails existingUser = userDetailsService.loadUserByUsername(username);
+            userDetailsService.loadUserByUsername(username);
         } catch (UsernameNotFoundException unfe) {
             userFound = false;
         }
@@ -61,6 +88,7 @@ public class UserController {
             UserDetails userDetails = new User(username,password, Collections.emptyList());
 
             userDetailsService.createUser(userDetails);
+            return "register-success";
         }
         if(!m.matches()) {
             model.addAttribute("passwordError","Invalid password");
@@ -69,7 +97,7 @@ public class UserController {
         if(userFound) {
             model.addAttribute("userError","Existing username");
         }
-        return "login";
+        return "index";
     }
     private String getErrorMessage(HttpServletRequest request, String key) {
         Exception exception = (Exception) request.getSession().getAttribute(key);
