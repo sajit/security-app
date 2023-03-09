@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import edu.umd.cysec.capstone.securityapp.service.MongoUserDetailsService;
 
 @Configuration
@@ -21,12 +20,12 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests((requests) -> requests
-                        .mvcMatchers("/","/register-success","/login","/register")
-                        .permitAll()
-                        .anyRequest().authenticated()
-                );
+//        http
+//                .authorizeHttpRequests((requests) -> requests
+//                        .mvcMatchers("/","/register-success","/login","/register")
+//                        .permitAll()
+//                        //.anyRequest().authenticated()
+//                );
 
         return http.build();
     }

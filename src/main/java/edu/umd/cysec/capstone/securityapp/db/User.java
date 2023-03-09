@@ -6,6 +6,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document("users")
 public class User {
+
+    public User(){}
     @Id
     private String id;
 

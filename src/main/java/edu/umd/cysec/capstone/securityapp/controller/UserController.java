@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -49,7 +48,7 @@ public class UserController {
 
     @PostMapping( value = "/login",
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = {
-            MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+            MediaType.TEXT_HTML_VALUE})
     public String login(@RequestParam Map<String, String> body, Model model,HttpServletRequest request) {
         String username = body.get("username");
         String password = body.get("password");
@@ -61,7 +60,7 @@ public class UserController {
             sc.setAuthentication(authReq);
             HttpSession session = request.getSession(true);
             session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
-            return "home";
+            return "redirect:/home";
         } catch (BadCredentialsException badCredentialsException) {
             model.addAttribute("loginError","Invalid username or password");
             return "index";

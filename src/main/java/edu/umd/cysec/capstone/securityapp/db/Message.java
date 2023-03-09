@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document("messages")
 public class Message {
 
+    public Message() {}
     @Id
     private String id;
 
@@ -40,6 +41,10 @@ public class Message {
 
     public String getContent() {
         return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Message(String from, String to, String content){
