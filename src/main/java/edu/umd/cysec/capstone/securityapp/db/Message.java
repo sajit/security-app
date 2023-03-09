@@ -1,0 +1,57 @@
+package edu.umd.cysec.capstone.securityapp.db;
+
+import java.time.LocalDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+@Document("messages")
+public class Message {
+
+    @Id
+    private String id;
+
+    @Indexed(background = true)
+    @Field
+    String to;
+
+    @Indexed(background = true)
+    @Field
+    String from;
+
+    @Field
+    String content;
+
+    @Field
+    LocalDate localDate;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public Message(String from, String to, String content){
+        this(from,to,content,LocalDate.now());
+    }
+
+    public Message(String from, String to, String content, LocalDate date) {
+        this.from = from;
+        this.to  = to;
+        this.content  = content;
+        this.localDate = date;
+    }
+
+
+}
