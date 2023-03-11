@@ -1,16 +1,21 @@
 package edu.umd.cysec.capstone.securityapp.controller;
 
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
+import static org.springframework.util.StreamUtils.BUFFER_SIZE;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.security.InvalidKeyException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Controller;
@@ -18,6 +23,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cysec.capstone.securityapp.dao.MessageRepository;
 import edu.umd.cysec.capstone.securityapp.db.Message;
 import edu.umd.cysec.capstone.securityapp.service.Decryptor;
@@ -26,6 +34,7 @@ import edu.umd.cysec.capstone.securityapp.service.Encryptor;
 @Controller
 public class MessageController {
 
+    ObjectMapper objectMapper = new ObjectMapper();
 
 
     @Autowired
@@ -85,4 +94,34 @@ public class MessageController {
 
     }
 
+    @GetMapping("/dbdump/file")
+    public StreamingResponseBody downloadFile(HttpServletResponse response)  {
+
+        List<Message> messageList =  messageRepository.findAll();
+
+
+
+
+        try {
+            String jsonString = objectMapper.writeValueAsString(messageList);
+            InputStream is = new ByteArrayInputStream(jsonString.getBytes());
+            response.setContentType("application/json");
+            response.setHeader(
+                    HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"messages.json\"");
+            return outputStream -> {
+                int bytesRead;
+                byte[] buffer = new byte[BUFFER_SIZE];
+
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            };
+        } catch (JsonProcessingException jsonProcessingException) {
+
+        }
+        return null;
+
+
+
+    }
 }

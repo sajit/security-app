@@ -1,5 +1,6 @@
 package edu.umd.cysec.capstone.securityapp.db;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -7,8 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document("messages")
-public class Message {
+public class Message implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     public Message() {}
     @Id
     private String id;

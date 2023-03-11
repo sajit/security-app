@@ -93,7 +93,7 @@ public class UserController {
             UserDetails userDetails = new User(username,encodedPassword, Collections.emptyList());
 
             userDetailsService.createUser(userDetails);
-            return "register-success";
+            return "redirect:/register-success";
         }
         if(!m.matches()) {
             model.addAttribute("passwordError","Invalid password");
