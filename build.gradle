@@ -1,22 +1,9 @@
-buildscript {      // Configuration for building
-	repositories {
-		jcenter()
-		mavenCentral()
-	}
-	dependencies {
-		classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.4.3'
-		classpath 'org.akhikhl.gretty:gretty:+'
-	}
-}
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.9'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-	id 'war'
 }
 
-apply plugin: 'org.akhikhl.gretty'
-apply plugin: 'com.google.cloud.tools.appengine'
 
 group = 'edu.umd.cysec.capstone'
 version = '0.0.1'
@@ -27,8 +14,6 @@ repositories {
 }
 
 dependencies {
-	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
-	providedCompile 'com.google.appengine:appengine:+'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -38,16 +23,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 }
-gretty {
-	servletContainer = 'jetty9'  // What App Engine Flexible uses
-}
 
-appengine {
-	deploy {   // deploy configuration
-		stopPreviousVersion = true  // default - stop the current version
-		promote = true              // default - & make this the current version
-	}
-}
 
 tasks.named('test') {
 	useJUnitPlatform()
