@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import edu.umd.cysec.capstone.securityapp.dao.UserRepository;
+import edu.umd.cysec.capstone.securityapp.dao.mongo.UserRepository;
 import edu.umd.cysec.capstone.securityapp.db.User;
 
 @Service

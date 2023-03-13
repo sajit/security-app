@@ -1,4 +1,4 @@
-package edu.umd.cysec.capstone.securityapp.dao;
+package edu.umd.cysec.capstone.securityapp.dao.mongo;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;

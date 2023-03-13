@@ -1,4 +1,4 @@
-package edu.umd.cysec.capstone.securityapp.dao;
+package edu.umd.cysec.capstone.securityapp.dao.mongo;
 
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
