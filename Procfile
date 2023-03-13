@@ -1,1 +1,1 @@
-web: java -Dserver.port=43667 $JAVA_OPTS -jar build/libs/security-app-0.0.1.jar
+web: java $JAVA_OPTS -jar build/libs/security-app-0.0.1.jar
