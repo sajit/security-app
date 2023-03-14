@@ -62,8 +62,8 @@ public class MessageController {
     }
 
     private String getUsername(Principal principal) {
-        Authentication auth = (Authentication) principal;
-        String currentUser = auth.getPrincipal().toString();
+
+        String currentUser = principal.getName();
         return currentUser;
     }
 

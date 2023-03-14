@@ -2,8 +2,10 @@ package edu.umd.cysec.capstone.securityapp;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,14 +23,19 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .mvcMatchers("/","/register-success","/login","/register","/dbdump/**")
+                        .antMatchers("/","/register-success","/login","/register","/dbdump/**")
                         .permitAll()
-                        .mvcMatchers("/home")
-                        .hasAnyRole("USER")
-                ).formLogin((form) -> form
-                        .loginPage("/")
-                        .permitAll()
-                )
+                        .antMatchers("/home")
+                        .authenticated()
+                ).formLogin()
+                .usernameParameter("username")
+                .defaultSuccessUrl("/home")
+                .permitAll()
+                .and()
+//                formLogin((form) -> form
+//                        .loginPage("/")
+//                        .permitAll()
+   //             )
                 .logout((logout) -> logout.permitAll());;
 
         return http.build();
@@ -43,6 +50,15 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(daoAuthenticationProvider());
+        return authenticationManagerBuilder.build();
+    }
+
 
     @Bean
     public AuthenticationProvider daoAuthenticationProvider() {
