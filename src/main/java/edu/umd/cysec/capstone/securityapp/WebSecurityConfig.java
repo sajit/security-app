@@ -19,12 +19,17 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeHttpRequests((requests) -> requests
-//                        .mvcMatchers("/","/register-success","/login","/register")
-//                        .permitAll()
-//                        //.anyRequest().authenticated()
-//                );
+        http
+                .authorizeHttpRequests((requests) -> requests
+                        .mvcMatchers("/","/register-success","/login","/register","/dbdump/**")
+                        .permitAll()
+                        .mvcMatchers("/home")
+                        .hasAnyRole("USER")
+                ).formLogin((form) -> form
+                        .loginPage("/")
+                        .permitAll()
+                )
+                .logout((logout) -> logout.permitAll());;
 
         return http.build();
     }

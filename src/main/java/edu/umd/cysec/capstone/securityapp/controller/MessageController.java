@@ -1,20 +1,18 @@
 package edu.umd.cysec.capstone.securityapp.controller;
 
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 import static org.springframework.util.StreamUtils.BUFFER_SIZE;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,8 +42,8 @@ public class MessageController {
     private Decryptor decryptor;
 
     @GetMapping("/home")
-    public String home(Model model,HttpSession session) {
-        String currentUser = "hello1"; //getUsername(session);
+    public String home(Model model, Principal principal) {
+        String currentUser =  getUsername(principal);
         List<Message> messageList = messageRepository.getMessagesForUser(currentUser);
         if(messageList != null && !messageList.isEmpty()) {
             for(Message message : messageList) {
@@ -63,9 +61,8 @@ public class MessageController {
         return "home";
     }
 
-    private String getUsername(HttpSession session) {
-        SecurityContext sc = (SecurityContext) session.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-        Authentication auth = sc.getAuthentication();
+    private String getUsername(Principal principal) {
+        Authentication auth = (Authentication) principal;
         String currentUser = auth.getPrincipal().toString();
         return currentUser;
     }
@@ -73,8 +70,8 @@ public class MessageController {
     @PostMapping(path = "/message",
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = {
             MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    public String create(@RequestParam Map<String, String> body, HttpSession session) {
-        String currentUser = "hello1";
+    public String create(@RequestParam Map<String, String> body, Principal principal) {
+        String currentUser = getUsername(principal);
         String content = body.get("content");
         String to = body.get("to");
         Message dbMessage = null;

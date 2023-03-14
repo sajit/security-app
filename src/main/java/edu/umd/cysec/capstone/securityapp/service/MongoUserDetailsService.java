@@ -1,7 +1,10 @@
 package edu.umd.cysec.capstone.securityapp.service;
 
 import java.util.Collections;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,23 +23,14 @@ public class MongoUserDetailsService  implements UserDetailsService {
         if(user == null) {
             throw new UsernameNotFoundException(username);
         }
-
+        Set<GrantedAuthority> grantedAuthorities = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
         org.springframework.security.core.userdetails.User spUser = new org.springframework.security.core.userdetails.User(
-                user.getUsername(),user.getPassword(), Collections.emptyList()
+                user.getUsername(),user.getPassword(), grantedAuthorities
         );
 
         return spUser;
     }
 
-    public boolean authenticate(String username,String password) {
-        User user = userRepository.findUserByUsername(username);
-        if(user != null) {
-            return user.getPassword().equals(password);
-        }
-        else
-            return false;
-
-    }
 
     public void createUser(UserDetails user) {
         User dbUser = new User(user.getUsername(),user.getPassword());
