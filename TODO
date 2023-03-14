@@ -3,10 +3,12 @@
 3. Send messages
 4. View messages
 5. Encrypt messages in database
----------------------
 6. Db dump
-7. Security filter chain
 8 Hosting
+---------------------
+
+7. Security filter chain
+
 -----
 Nice to have
 TFA

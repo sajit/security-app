@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import edu.umd.cysec.capstone.securityapp.service.MongoUserDetailsService;
 
@@ -37,12 +36,6 @@ public class WebSecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        String pepper = "pepper"; // secret key used by password encoding
-        int iterations = 200000;  // number of hash iteration
-        int hashWidth = 256;      // hash width in bits
-
-        Pbkdf2PasswordEncoder pbkdf2PasswordEncoder =
-                new Pbkdf2PasswordEncoder(pepper, iterations, hashWidth);
         return new BCryptPasswordEncoder();
     }
 
