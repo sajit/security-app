@@ -5,7 +5,7 @@
     <title>Home page</title>
 </head>
 <body>
-
+Current user :  <div th:text="${session.user}"></div>
 <table>
     <tr>
         <th>From</th>
@@ -18,12 +18,19 @@
 
     </tr>
 </table>
-
-
 <b>Send Message</b> <br/>
+
+
 <form th:action="@{/message}" method="post">
-    <div><label> Message : <input type="text" name="content"/> </label></div>
-    <div><label> To: <input type="text" name="to"/> </label></div>
+    <table>
+        <tr><th>Message:</th>
+            <th><input type="text" name="content"/> </th>
+        </tr>
+        <tr>
+            <th>To:</th>
+            <th><input type="text" name="to"/></th>
+        </tr>
+    </table>
     <div><input type="submit" value="Send"/></div>
 </form>
 </body>
