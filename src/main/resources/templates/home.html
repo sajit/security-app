@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Home page</title>
 </head>
 <body>
-Current user :  <div th:text="${session.user}"></div>
+<table>
+    <tr>
+        <th>Current user :  <div sec:authentication="principal.username"></div></div></th>
+        <th> <form th:action="@{/logout}" method="post"><span><input type="submit" value="Logout"/></span></form></th>
+    </tr>
+</table>
+
 <table>
     <tr>
         <th>From</th>

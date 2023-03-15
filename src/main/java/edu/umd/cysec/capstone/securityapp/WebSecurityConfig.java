@@ -32,11 +32,8 @@ public class WebSecurityConfig {
                 .defaultSuccessUrl("/home")
                 .permitAll()
                 .and()
-//                formLogin((form) -> form
-//                        .loginPage("/")
-//                        .permitAll()
-   //             )
-                .logout((logout) -> logout.permitAll());;
+
+                .logout((logout) -> logout.logoutSuccessUrl("/").permitAll());;
 
         return http.build();
     }
