@@ -9,10 +9,11 @@ import java.io.InputStream;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.umd.cysec.capstone.securityapp.dao.mongo.MessageRepository;
 import edu.umd.cysec.capstone.securityapp.db.Message;
 import edu.umd.cysec.capstone.securityapp.service.Decryptor;
@@ -29,7 +31,12 @@ import edu.umd.cysec.capstone.securityapp.service.Encryptor;
 @Controller
 public class MessageController {
 
+    private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
     ObjectMapper objectMapper = new ObjectMapper();
+
+    public MessageController() {
+        objectMapper.registerModule(new JavaTimeModule());
+    }
 
 
     @Autowired
@@ -111,7 +118,7 @@ public class MessageController {
                 }
             };
         } catch (JsonProcessingException jsonProcessingException) {
-
+                logger.error(jsonProcessingException.getMessage());
         }
         return null;
 
