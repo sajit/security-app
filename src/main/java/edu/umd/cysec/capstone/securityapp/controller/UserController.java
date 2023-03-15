@@ -48,31 +48,6 @@ public class UserController {
         return "index";
     }
 
-//    @PostMapping( value = "/login",
-//            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = {
-//            MediaType.TEXT_HTML_VALUE})
-//    public String login(@RequestParam Map<String, String> body, Model model,HttpServletRequest request) {
-//        String username = body.get("username");
-//        String password = body.get("password");
-//        UsernamePasswordAuthenticationToken authReq
-//                = new UsernamePasswordAuthenticationToken(username, password);
-//        try {
-//            authenticationProvider.authenticate(authReq);
-//
-//            SecurityContext sc = SecurityContextHolder.getContext();
-//            sc.setAuthentication(authReq);
-//            HttpSession session = request.getSession(true);
-//            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
-//            return "redirect:/home";
-//        } catch (BadCredentialsException badCredentialsException) {
-//            model.addAttribute("loginError","Invalid username or password");
-//            return "index";
-//        }
-//
-//
-//    }
-
-
     String passwordRegex =  "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8,20}$";
     Pattern p = Pattern.compile(passwordRegex);
     @PostMapping(
@@ -104,6 +79,12 @@ public class UserController {
         }
         if(userFound) {
             model.addAttribute("userError","Existing username");
+        }
+        if(username.isBlank()) {
+            model.addAttribute("userError1","Required field");
+        }
+        if(password.isBlank()) {
+            model.addAttribute("passwordError1","Required field");
         }
         return "index";
     }

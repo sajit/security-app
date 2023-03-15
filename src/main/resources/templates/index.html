@@ -7,16 +7,7 @@
 <body>
 
 
-<span th:if="${passwordError}" th:text="${passwordError}"></span>
-<div th:if="${passwordError}">
-    <b>Password Rules</b> <br/>
-        It contains at least 8 characters and at most 20 characters. <br/>
-        It contains at least one digit. <br/>
-        It contains at least one upper case alphabet. <br/>
-        It contains at least one lower case alphabet. <br/>
-        It contains at least one special character which includes !@#$%&*()-+=^. <br/>
-        It doesn’t contain any white space. <br/>
-</div>
+
 
     <div><b>Login</b></div> <br/>
     <form th:action="@{/login}" method="post">
@@ -40,5 +31,15 @@
     </form>
      <br/>
     <div th:if="${userError}">Username exists. </div>
+    <span th:if="${passwordError}" th:text="${passwordError}"></span>
+    <div th:if="${passwordError}">
+        <b>Password Rules</b> <br/>
+        It contains at least 8 characters and at most 20 characters. <br/>
+        It contains at least one digit. <br/>
+        It contains at least one upper case alphabet. <br/>
+        It contains at least one lower case alphabet. <br/>
+        It contains at least one special character which includes !@#$%&*()-+=^. <br/>
+        It doesn’t contain any white space. <br/>
+    </div>
 </body>
 </html>
