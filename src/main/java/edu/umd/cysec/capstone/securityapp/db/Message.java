@@ -26,6 +26,10 @@ public class Message implements Serializable {
     @Field
     String content;
 
+    public LocalDate getLocalDate() {
+        return localDate;
+    }
+
     @Field
     LocalDate localDate;
 

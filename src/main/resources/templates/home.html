@@ -19,8 +19,10 @@
         <th>Date</th>
     </tr>
     <tr th:each="message: ${messages}">
-        <td th:text="${message.content}" />
+
         <td th:text="${message.from}" />
+        <td th:text="${message.content}" />
+        <td th:text="${message.localDate}" />
 
     </tr>
 </table>
