@@ -79,10 +79,15 @@ public class MessageController {
     @PostMapping(path = "/message",
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = {
             MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    public String create(@RequestParam Map<String, String> body, Principal principal) {
+    public String create(@RequestParam Map<String, String> body, Principal principal, Model model) {
         String currentUser = getUsername(principal);
         String content = body.get("content");
         String to = body.get("to");
+
+        if((to!= null &&  to.length() > 100) || (content!= null &&  content.length() > 100)) {
+            model.addAttribute("messageError","Data too big");
+            return "home";
+        }
         Message dbMessage = null;
         try {
             dbMessage = new Message(currentUser,to,encryptor.encryptString(content));

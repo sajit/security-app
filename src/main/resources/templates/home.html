@@ -32,6 +32,7 @@
 
 <form th:action="@{/message}" method="post">
     <table>
+        <tr>Messages size limited to 100 characters</tr>
         <tr><th>Message:</th>
             <th><input type="text" name="content"/> </th>
         </tr>
@@ -42,5 +43,7 @@
     </table>
     <div><input type="submit" value="Send"/></div>
 </form>
+<br/>
+<div th:if="${messageError}" th:text="${messageError}"></div>
 </body>
 </html>
