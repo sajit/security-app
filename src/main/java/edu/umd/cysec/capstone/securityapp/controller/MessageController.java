@@ -3,10 +3,15 @@ package edu.umd.cysec.capstone.securityapp.controller;
 import static org.springframework.util.StreamUtils.BUFFER_SIZE;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -55,8 +60,8 @@ public class MessageController {
         if(messageList != null && !messageList.isEmpty()) {
             for(Message message : messageList) {
                 try {
-                    message.setContent(decryptor.decrypt(message.getContent()));
-                } catch (IllegalBlockSizeException | BadPaddingException e) {
+                    message.setContent(decryptor.decryptString(message.getContent()));
+                } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
                     e.printStackTrace();
                 }
             }
@@ -80,9 +85,10 @@ public class MessageController {
         String to = body.get("to");
         Message dbMessage = null;
         try {
-            dbMessage = new Message(currentUser,to,encryptor.encrypt(content));
+            dbMessage = new Message(currentUser,to,encryptor.encryptString(content));
             messageRepository.save(dbMessage);
-        } catch (IllegalBlockSizeException | BadPaddingException e) {
+        } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException
+                 | InvalidAlgorithmParameterException | InvalidKeyException e) {
             e.printStackTrace();
         }
 
