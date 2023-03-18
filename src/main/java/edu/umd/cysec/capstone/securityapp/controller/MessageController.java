@@ -56,9 +56,7 @@ public class MessageController {
             for(Message message : messageList) {
                 try {
                     message.setContent(decryptor.decrypt(message.getContent()));
-                } catch (IllegalBlockSizeException e) {
-                    e.printStackTrace();
-                } catch (BadPaddingException e) {
+                } catch (IllegalBlockSizeException | BadPaddingException e) {
                     e.printStackTrace();
                 }
             }
@@ -70,8 +68,7 @@ public class MessageController {
 
     private String getUsername(Principal principal) {
 
-        String currentUser = principal.getName();
-        return currentUser;
+        return principal.getName();
     }
 
     @PostMapping(path = "/message",
@@ -85,9 +82,7 @@ public class MessageController {
         try {
             dbMessage = new Message(currentUser,to,encryptor.encrypt(content));
             messageRepository.save(dbMessage);
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }
 

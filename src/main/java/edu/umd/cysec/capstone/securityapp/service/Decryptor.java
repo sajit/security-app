@@ -6,9 +6,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
@@ -22,7 +20,6 @@ public class Decryptor {
 
     public Decryptor(@Value("${secret.key}")String key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         byte[] decodedKey = Base64.getDecoder().decode(key);
-        Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
         cipher = Cipher.getInstance("AES");
         SecretKey originalKey = new SecretKeySpec(Arrays.copyOf(decodedKey, 16), "AES");
         // encrypt the text

@@ -22,7 +22,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests((requests) -> requests
+                .authorizeHttpRequests(requests -> requests
                         .antMatchers("/","/register-success","/login","/register","/dbdump/**")
                         .permitAll()
                         .antMatchers("/home")
@@ -33,7 +33,7 @@ public class WebSecurityConfig {
                 .permitAll()
                 .and()
 
-                .logout((logout) -> logout.logoutSuccessUrl("/").permitAll());;
+                .logout(logout -> logout.logoutSuccessUrl("/").permitAll());
 
         return http.build();
     }

@@ -1,6 +1,5 @@
 package edu.umd.cysec.capstone.securityapp.service;
 
-import java.util.Collections;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,11 +23,10 @@ public class MongoUserDetailsService  implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
         Set<GrantedAuthority> grantedAuthorities = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
-        org.springframework.security.core.userdetails.User spUser = new org.springframework.security.core.userdetails.User(
+        return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),user.getPassword(), grantedAuthorities
         );
 
-        return spUser;
     }
 
 
